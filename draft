@@ -1,0 +1,174 @@
+G2L_STAGE_ENTITIESDEFS."object" = { gm_name: ,ldtk_name: undefined, variables: [], gm_over_ldtk: true }
+
+// This function should go when preparing the merge window !! // A coder met à jour la comparaison staging / fichier (en fait struct)
+function G2L_button_prepare_merge() // This operation prepare the merge by comparing staging area and destination file. It allows user to select what to include in the export
+{
+if !G2L_ld_file_to_internal_struct() exit; // Collect latest data from the LDtk destination file just before exporting.
+// dans l'update staging, ajouter les nouveaux, supprimer ceux qui ne sont plus, et remettre les ldtk_name à undefined pour tous.
+
+var _ldtk_only      = G2L_LDTK_STRUCT.defs.entities;
+var _object_names   = variable_struct_get_names(G2L_STAGE_ENTITIESDEFS);
+var _objects_number = array_length(_object_names);
+var _object_i, _field_defs_i, _ld_i;
+for (var _i = 0; _i < _objects_number; _i++)				// loop in the staging area over all objects imported from Game Maker
+{
+	_object_i = _object_names[_i];
+	_ld_i = array_find( _ldtk_only, _object_i.name / _object_i.identifier ??);
+	if _ld_i != undefined						// if the object exists in both staging and LDtk file, marks a conflict
+	{
+		// include ldtk_data in staging together with gm_data
+		G2L_STAGE_ENTITIESDEFS[$ _object_i].ldtk_name = _ld_i.name ou identifier;
+		_field_defs_i = G2L_STAGE_ENTITIESDEFS[$ _object_i].variables;
+		var _field_defs_number = array_length(_field_defs_i);
+		var _field_k, _ld_k;
+		for (var _k = 0; _k < _field_defs_number; _k++)
+		{
+			_field_k = _field_defs_i[ _k];
+			_ld_k    = array_find( _ld_i.fieldDefs (tableau des fields), _field_k.gm_data.name ou .identifier)
+			if _ld_k != undefined // and _ld_k.value != _field_k.default
+			{
+				_field_k.ldtk_data = _ld_k;
+			}
+			else
+			{
+				_field_k.ldtk_data = undefined;
+			}
+		}
+		array_delete(_ldtk_only, _ld_j);
+	}
+	else								// if the object only exist in staging and not in LDtk file, marks as import question
+	{
+		G2L_STAGE_ENTITIESDEFS[$ _object_i].ldtk_name = undefined;
+	}
+}
+
+var _objects_number = array_length(_ldtk_only);
+var _object_i, _field_defs_i, _ld_j;
+for (var _i = 0; _i < _objects_number; _i++)				// loop in objects not in Staging, to add them to merge options
+{
+	_object_i = _ldtk_only[_i];
+	G2L_STAGE_ENTITIESDEFS[$ _object_i] = { gm_name: undefined, ldtk_name: _object_i.identifier ou autre, gm_over_ldtk: true, variables:_object_i.fieldDefs ou autre }
+}
+
+
+// ajouter le .gm_data et le .ldtk_data et le gm_over_ld dans le G2L_STAGE_ENTITIESDEFS[i].ldtk_data = {}
+// ne pas deleter le staging G2L_STAGE_ENTITIESDEFS à chaque import pour garder juste le gm_over_ld
+
+function G2L_merge_window_step() {
+// Header
+imguigml_columns(5);
+imguigml_text("Source");
+imguigml_next_column()
+imguigml_text("Use");
+imguigml_next_column()
+imguigml_text("Name");
+imguigml_next_column()
+imguigml_text("Type");
+imguigml_next_column()
+imguigml_text("Value");
+imguigml_next_column()
+
+// List
+var _objects_number = array_length(G2L_STAGE_ENTITIESDEFS);
+var _obj_def_i, _obj_i, _ret_obj_i, _ret_change_i;
+var _fields_number;
+var _field_j, _var_j, _ret_var_j;
+var _guiid = 0;
+for (var _i = 0; _i < _objects_number; _i++)	
+{
+// Object description and options
+	_obj_def_i  = G2L_STAGE_ENTITIESDEFS[ _i];
+	_guiid ++;
+	_ret_change_i = false;
+// GM source
+	_obj_i      = _obj_def_i.gm_data;
+	imguigml_columns(5);
+	imguigml_text("G.M.");
+	imguigml_next_column()
+	_ret_obj_i = imguigml_radio_button("##"+"gm"+string(_guiid), _obj_def_i.gm_over_ld);
+	if (_ret_obj_i) 
+	{
+		_obj_def_i.gm_over_ld = true;
+		_ret_change_i = true;
+	}
+	imguigml_next_column()
+	imguigml_text(_obj_i.name);
+	imguigml_next_column()
+	imguigml_next_column()
+	imguigml_next_column()
+// LDtk source
+	_obj_i      = _obj_def_i.ldtk_data
+	imguigml_text("LDtk");
+	imguigml_next_column();
+	_ret_obj_i = imguigml_radio_button("##"+"ld"+string(_guiid), !_obj_def_i.gm_over_ld);
+	if(_ret_obj_i) 
+	{
+		_obj_def_i.gm_over_ld = false;
+		_ret_change_i = true;
+	}
+	imguigml_next_column();
+	imguigml_text(_obj_i.name);
+	imguigml_next_column();
+	imguigml_next_column();
+	imguigml_next_column();
+
+	_fields_number = array_length(_obj_def_i.variables);
+	for (var _j = 0; _j < _field_number; _j++)	
+	{
+	// Variable description and options
+		_field_j  = _field_defs_i[ _j];
+		_guiid ++;
+	// GM source
+		_var_j   = _field_j.gm_data;
+		imguigml_columns(5);
+		imguigml_text("G.M.");
+		imguigml_next_column();
+		if !_ret_obj_i
+		{
+			_ret_var_j = imguigml_radio_button("##"+"gm"+string(_guiid), _field_j.gm_over_ld);
+			if(_ret_var_j) _field_j.gm_over_ld = true;
+		}
+		else
+		{
+
+		}
+		imguigml_next_column()
+		imguigml_text(_var_j.name);
+		imguigml_next_column()
+		imguigml_text(G2L_string_type(_var_j.type));
+		imguigml_next_column()
+		imguigml_text(_var_j.value);
+		imguigml_next_column()
+	// LDtk source
+		_var_j = _field_j.ldtk_data
+		imguigml_text("LDtk");
+		imguigml_next_column()
+		_ret_var_j = imguigml_radio_button("##"+"ld"+string(_guiid), !_field_j.gm_over_ld);
+		if(_ret_var_j) _field_j.gm_over_ld = false;
+		imguigml_next_column()
+		imguigml_text(_var_j.name);
+		imguigml_next_column()
+		imguigml_text(G2L_string_type(_var_j.type));
+		imguigml_next_column()
+		imguigml_text(_var_j.value);
+		imguigml_next_column()
+	}
+}
+
+
+loop in staging, for each object
+if obj is in ldtkstruct - mark question import from staging / no unchanged (ldtk)
+remove from _tempstruct
+for each var - import from staging  / no unchanged (ldtk)
+if obj not in ldtkstruct import from staging / no (ldtk)
+for each var - import from staging  / no (ldtk)
+loop in _tempstruct / = those obj are only in ldtk not in staging. for each object
+mark question delete from ldtk / no unchanged (ldtk) (section delete_or_keep du staging area
+for each var - from ldtk / no unchanged (ldtk)*/
+/* modifier la fonction G2L_gm_objects_to_staging
+ne nettoie pas en entrée G2L_STAGE_ENTITIESDEFS = {};
+loop sur les obj de l'array
+si existe modifie les paramètres mais ne change pas les options du user staging / ldtk
+si existe pas ajoute et met option user à staging par défaut
+la section delte est inchangée
+*/
