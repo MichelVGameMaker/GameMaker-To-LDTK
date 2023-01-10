@@ -1,5 +1,5 @@
 # GameMaker-To-LDTK
-Tool written in gml to import your Game Maker objects settings into LDtk level editor
+Import your Game Maker objects settings into LDtk level editor.
 
 ## About G2L
 G2L, or in long GM to LDtk, is a tiny tool written in gml to import your Game Maker objects settings into LDtk level editor to fasten the setup, even on complex projects.
@@ -31,7 +31,7 @@ If your LDtk file is out of Game Maker sandbox repository, which will surely be 
 Once imported in your project, you can activate G2L anytime by pressing CTRL+SHIFT+G.
 
 ### Define Game Maker project and LDtk file
-The first time you run G2L on your project, you will need to define two path so that G2L knows where to scan objects and what destination file to import data into:
+The first time you run G2L on your project, you will need to define two paths so that G2L knows where to scan objects and what destination file to import data into:
 -	Click “Select Game Maker directory”, find and click the .yy file of the project you want to scan and export data from (the .yy file is not used, it is the associated directory that is collected).
 -	Click “Select destination LDtk file”, find and click the .ldtk file you want to import data into.
 The Game Maker directory and the .ldtk destination file are both saved in your user preferences for later uses. Of course, you can update them anytime.
@@ -62,7 +62,7 @@ G2L is mainly working thanks to:
 -Jujuadam’s SNAP library. SNAP offers advanced data parsing features. If you do not know about it, or worse about Juju’s library, you can check them out here: https://github.com/JujuAdams
 -Rousr's imguigml. imguigmgl is a wrapper of dearimgui library that allows to build user interface in no time. You can download it here: https://imguigml.rou.sr/
 
-Other than that, the tool proceeds in three steps:
+Other than that, the tool proceeds in four steps:
 1-a-Scan object .yy files from the Game Maker directory, to extract all data about their variables definition. 
 1-b-Arrange this data in JSON format stored in a Staging Area. In the processs, it translates from Game Maker to LDtk syntax (a variable.name in game maker translates to a field.identifier in ldtk for instance, a variable.default_value to a struct { type, range, } etc…
 2-Parse the destination LDtk file into an other struct.
