@@ -1,230 +1,123 @@
-// return a struct describing an empty layer in the format expected within a .yy room file, within the layers array
-G2L_create_yy_instance_layer(_name, _depth, _grid_x, _grid_y) 
-{
-	return = {
+layer_set_tiles(_layer_struct, _tiles_struct) {
+	if _layer_struct.resourceType != "GMRTileLayer"
 	{
-		resourceType:"GMRInstanceLayer",
-		resourceVersion:1.0,
-		name:_name,
-		visible:true,
-		depth:_depth,
-		userdefinedDepth:false, // or true... 
-		inheritLayerDepth:false,
-		inheritLayerSettings:false,
-		gridX: _grid_x,
-		gridY: _grid_y,
-		layers:[],
-		hierarchyFrozen:false,
-		effectEnabled:true,
-		effectType:null,
-		properties:[],
-		instances:[],
-	};
+		show_debug_message("[YY: Warning, calling layer_set_tiles() on a struct that is not a proper GM Tile Layer");
+		return false;
+	}
+	_layer_struct.tiles = _tiles_struct;
+	return true;
 }
-G2L_create_yy_asset_layer(_name, _depth, _grid_x, _grid_y) 
-{
-	return = {
+layer_set_tileset(_layer_struct, _tileset_name) {
+	with(_layer_struct)
 	{
-		resourceType:"GMRAssetLayer",
-		resourceVersion:1.0,
-		name:_name,
-		visible:true,
-		depth:_depth,
-		userdefinedDepth:false, // or true... 
-		inheritLayerDepth:false,
-		inheritLayerSettings:false,
-		gridX: _grid_x,
-		gridY: _grid_y,
-		layers:[],
-		hierarchyFrozen:false,
-		effectEnabled:true,
-		effectType:null,
-		properties:[],
-		assets:[],
-	};
-}
-G2L_create_yy_background_layer(_name, _depth, _grid_x, _grid_y, _colour) 
-{
-	return = {
-	{
-		resourceType:"GMRBackgroundLayer",
-		resourceVersion:1.0,
-		name:_name,
-		visible:true,
-		depth:_depth,
-		userdefinedDepth:false, // or true... 
-		inheritLayerDepth:false,
-		inheritLayerSettings:false,
-		gridX: _grid_x,
-		gridY: _grid_y,
-		layers:[],
-		hierarchyFrozen:false,
-		effectEnabled:true,
-		effectType:null,
-		properties:[],
-		spriteId:null,
-		colour:_colour,
-		x:0,
-		y:0,
-		htiled:false,
-		vtiled:false,
-		hspeed:0.0,
-		vspeed:0.0,
-		stretch:false,
-		animationFPS:15.0,
-		animationSpeedType:0,
-		userdefinedAnimFPS:false,
-	};
-}
-G2L_create_yy_tile_layer(_name, _depth, _grid_x, _grid_y, _tileset, _width, _height) 
-{
-	return = {
-	{
-		resourceType:"GMTileLayer",
-		resourceVersion:1.0,
-		name:_name,
-		visible:true,
-		depth:_depth,
-		userdefinedDepth:false, // or true... 
-		inheritLayerDepth:false,
-		inheritLayerSettings:false,
-		gridX: _grid_x,
-		gridY: _grid_y,
-		layers:[],
-		hierarchyFrozen:false,
-		effectEnabled:true,
-		effectType:null,
-		properties:[],
-		x:0,
-		y:0,
-		tileSetId:
+		If resourceType != "GMRTileLayer"
 		{
-			name:_tileset,
-			path:"tilesets/" + _tileset + "/" + _tileset + ".yy",
-		},
-		tiles: 
-		{
-			TileDataFormat:1, // ??
-			SerialiseWidth:_width,
-			SerialiseHeight:_height,
-			TileCompressedData:[],
+			show_debug_message("[YY: Warning, calling layer_set_tileset() on a struct that is not a proper GM Tile Layer");
+			return false;
 		}
-	};
-}
-
-
-// update and return an existing struct describing a layer after including the passed variables in the format expected within a .yy room file, within the layers array
-G2L_set_yy_layer(_yy_layer_struct, _name, _depth, _grid_x, _grid_y, _instances) 
-{
-	_yy_layer_struct.name = _name;
-	_yy_layer_struct.depth =_depth;
-	_yy_layer_struct.gridX = _grid_x;
-	_yy_layer_struct.gridY = _grid_y;
-	_yy_layer_struct.instances = _instances;
-	return _yy_layer_struct;
-}
-// update and return an existing struct describing the room after including the passed variables in the format expected within a .yy room file, within the layers array
-G2L_set_yy_room(_yy_room_struct, _width, _height, _inst_creation_order) 
-{
-	_yy_room_struct.roomSettings.Width = _name;
-	_yy_room_struct.depth =_depth;
-	_yy_room_struct.gridX = _grid_x;
-	_yy_room_struct.gridY = _grid_y;
-	_yy_room_struct.instanceCreationOrder = _inst_creation_order;
-	return _yy_room_struct;
-}
-// return a struct describing an instance's property in the format that is expected within a .yy room file, within an GMRInstance
-G2L_create_yy_instance_property(object_name, _property_name, _property_value) {
-	return 
-	{
-		resourceType:"GMOverriddenProperty",
-		resourceVersion:1.0,
-		name:"",
-		propertyId:
+		tilesetId =
 		{
-			name:_property_name,
-			path:"objects/" + object_name + "/" + object_name + ".yy",
-		},
-		objectId:
-		{
-			name:object_name,
-			path:object_name + "/" + object_name + ".yy",
-		},
-		value:_property_value,
-	};
-	
+			name: _tileset_name,
+			path:"tilesets/"+_tileset_name+"/"+_tileset_name+".yy",
+		};
+	}
+	return true;
+}
+layer_set_visible(_layer_struct, _visible) {
+	_layer_struct.visible = _visible;
+	return true;
+}
+layer_set_grid_x(_layer_struct, _grid_x) {
+	_layer_struct.gridX= _grid_x;
+	return true;
+}
+layer_set_grid_y(_layer_struct, _grid_y) {
+	_layer_struct.gridY= _grid_y;
+	return true;
+}
+layer_set_depth(_layer_struct, _depth) {
+	_layer_struct.depth= _depth;
+	return true;
 }
 
-// return a struct describing an instance by using the format that is expected within a .yy room file, within an InstanceLayer
-G2L_create_yy_instance(_x, _y, _object_name, _unique_id, _variables_struct) {
-	var _yy_instance_struct = {
-	resourceType:"GMRInstance",
-	resourceVersion:1.0,
-	name:_unique_id,
-	properties:[],
-	isDnd:false,
-	objectId:
+asset_create(_layer, _x, _y, _sprite_name)
+{
+	resourceType: "GMRSpriteGraphic",
+	resourceVersion: "1.0",
+	name: _sprite_name+string(__asset_token++),
+	spriteId:
 	{
-		name:_object_name,
-		path:_object_name + "/" + _object_name + ".yy",
+		name: _sprite_name,
+		path: "sprites/"+_sprite_name+"/"+_sprite_name+".yy"
 	},
-	inheritCode:false,
-	hasCreationCode:false,
+	headPosition: 0.0,
+	rotation: 0.0,
+	scaleX: 1.0, 
+	scaleY: 1.0,
+	animationSpeed: 1.0,
 	colour:4294967295,
-	rotation:0.0,
-	scaleX:1.0,
-	scaleY:1.0,
-	imageIndex:0,
-	imageSpeed:1.0,
-	inheritedItemId:null,
-	frozen:false,
-	ignore:false,
-	inheritItemSettings:false,
-	x:_x,
-	y:_y,
-	}
+	inheritedItemId: null,
+	frozen:	false,
+	ignore: false,
+	inheritItemSettings: false,
+	x: _x,
+	y: _y,
+}
 
-if _variables_struct != undefined 
-{
-	var _properties_array = [];
-	var _variables_names = variable_struct_get_names(_variables_struct);
-	var _i = 0;
-	repeat(array_length(_variables_names))
-	{
-		var _variable_name_i = _variables_names[ _i];
-		if _variable_name_i      == "image_blend" _yy_instance_struct.coulour    = color_to_decimal(_variables_struct[$ _variable_name_i]);
-		else if _variable_name_i == "image_angle" _yy_instance_struct.rotation   = _variables_struct[$ _variable_name_i];
-		else if _variable_name_i == "image_index" _yy_instance_struct.imageIndex = _variables_struct[$ _variable_name_i];
-		else if _variable_name_i == "image_speed" _yy_instance_struct.imageSpeed = _variables_struct[$ _variable_name_i];
-		else
-		{
-			var _new_prop = G2L_create_yy_instance_property(_object_name, _variable_name_i, _variables_struct[$ _variable_name_i]);
-			array_push(_properties_array, _variables_struct[$ _variable_name_i]);
+asset_set_image_xscale(_asset_struct, _scale) {
+	_asset_struct.scaleX = _scale;
+}
+asset_set_image_yscale(_asset_struct, _scale) {
+	_asset_struct.scaleY = _scale;
+}
+asset_set_image_blend(_asset_struct, _blend) {
+	_asset_struct.colour = _blend;
+}
+asset_set_image_angle(_asset_struct, _angle) {
+	_asset_struct.rotation = _angle;
+}
+asset_set_image_speed(_asset_struct, _speed) {
+	_asset_struct.animationSpeed = _speed;
+}
+asset_set_x(_asset_struct, _x) {
+	_asset_struct.x = _x;
+}
+asset_set_y(_asset_struct, _y) {
+	_asset_struct.y = _y;
+}
+
+
+var _tiles_number = array_length(tiles);
+show_debug_message("Tiles number");
+show_debug_message(string(_tiles_number)); // actual lentght of array of tiles
+show_debug_message(string(_width_in_tiles*_height_in_tiles));  // calculated length of tiles data
+var _grid_size    = layer.__gridSize;
+var _width_in_tiles  = _.room_get_width()/_gridSize;
+var _height_in_tiles = _.room_get_height()/_gridSize;
+var _width_in_tiles  = layer.__cWid
+var _height_in_tiles = layer.__cHei
+show_debug_message("Cells width");
+show_debug_message(string(layer.__cWid));  // actual nb of tiles
+show_debug_message(string(_.room_get_width()/_gridSize)); // calculated nb of tiles
+
+
+tiles_struct[$ layer_name+"_1"] = array_create(_width_in_tiles*_height_in_tiles);
+var tile_index = 0;
+while (_cel < _tiles_number) {
+	tile_index = (tiles[_cel].px[0]/gridSize) + (tiles[_cel].px[1]/gridSize * l.__cWid);
+	var layer_n = 1;
+	while (tiles_struct[$ layer_name+"_"+string(layer_n)][tile_index] != 0) {
+		layer_n++;
+		if (!variable_struct_exists(tiles_struct,layer_name+"_"+string(layer_n))) {
+			tiles_struct[$ layer_name+"_"+string(layer_n)] = array_create((rm.width/gridSize)*(rm.height/gridSize));
 		}
-		_i++;
 	}
-	_yy_instance_struct[$ "properties"] = _properties_array;
-}
-return _yy_instance_struct;
+	_cel++;
 }
 
-// TEST create empty instance
-snapfrom
-_inst = G2L_create_yy_instance(10, 10, "oTest", "oTest" + "_" + 1, undefined)
-array_push( layers[0].instances, _inst)
-snapto
-
-// TEST create instance with one prop
-_inst = G2L_create_yy_instance(10, 10, "oTest", "oTest" + "_" + 1, { entier: 1 });
-array_push( layers[0].instances, _inst)
-
-// TEST create instance with system prop
-_inst = G2L_create_yy_instance(10, 10, "oTest", "oTest" + "_" + 1, {image_angle: 90 });
-array_push( layers[0].instances, _inst
-
-// TEST create instance with many props
-_inst = G2L_create_yy_instance(10, 10, "oTest", "oTest" + "_" + 1, { entier: 1 });
-array_push( layers[0].instances, _inst)
-
-// TEST parse an extract from LDtk to create instance with many props
+tiles = {
+	SerialiseWidth  : _width_in_tiles,
+	SerialiseHeight : _height_in_tiles,
+	TileSerialiseData : "", // from above
+};
 
