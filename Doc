@@ -1,0 +1,47 @@
+# YY
+YY is a small collection of functions to adjust Game Maker room file and object file. It is intended to pair with external level editor to import level in Game Maker project.
+
+## About G2L
+It is only two classes; one for room and one for object:
+-	The room class allows to create layers and instances.
+-	The object class allows to create properties (variable definition from the room editor).
+To avoid having too much impact in your project structure, YY is not capable of creating files, you will need to recycle existing objects and rooms. 
+
+### Use case
+YY is intended to help people working on importers to import data from external room editor or live room editor. I tried to keep the syntax close to what you would use in GML so that you can for instance create an instance in your room file with instance_create().
+There is an example of use case, a function allowing to import the full configuration for entities from a LDtk file.
+
+### License
+YY is fully free. Do whatever you want with it.
+
+### Version and Platform
+YY is tested on Game Maker LTS and on windows platform.
+
+## Installation
+YY needs to be imported as a local package in your Game Maker project.
+-	Download the .yymp file from GITHUB.
+-	Import it inside your project. You can do this by dragging the *. yymp file from an explorer window onto the GameMaker IDE or by clicking "Import Local Package" within the Tools Menu. In both case, a window will pop up to define import parameters. Click “add all” and “OK”. This will create a new folders in your Asset Browser labeled “G2L”. You are all set.
+If your LDtk file is out of Game Maker sandbox repository, which will surely be the case, you need to de-activate sandboxing. You can do so, on the Desktop targets (Windows, macOS, and Ubuntu (Linux)), by checking the “Disable file system sandbox” option in the Game Options for the target platform.
+
+## How to use
+A room or object class is created by giving the constructor call a Game Maker project directory and an asset name.
+As YY is not capable of creating files, you will need to recycle existing files. 
+The typical process runs in three steps: 
+-	create a class from an existing Game Maker file, 
+-	update the data accordingly to your need, 
+-	write back the data to the file.
+
+Each class returns a struct (with the asset's json) and method that allow to get and set key attributes.
+Please note that instance_create() method returns the struct describing the instance placed in the room and not the name (identifier) of the instance. 
+If you need to store the reference of this instance, you can use its .name value (the INST_A2B8 that you see in the room editor).
+
+I decided not to create classes for the instances and the layers created by YY. The struct returned by instance_create() or any layer_XX_create() will have no method.
+At the same time I built some room methods to update those that requires that you pass the target asset as argument. For instance .layer_get_visible() takes one argument which is the struct return by layer_XX_create()
+
+With YY you can update the current running project, Game Maker is smart enough to detect this change in live and ask you what to do in a warning window. If you click 'Save', YY changes will be deleted, if you click 'Reload', YY changes will be taken into account. 
+Please note that when modifying object variables from the variables definition section, you will need to close the section and reopen it for your changes to be visible.
+
+Documentation is a limited so far. You will have to browse through the methods available in the two classes.
+
+## Behind the hood
+YY mainly relies on Juju's SNAP to preserve the json format expected by Game Maker. SNAP offers advanced data parsing features. If you do not know about it, or worse about Juju’s library, you can check them out here: https://github.com/JujuAdams
